@@ -1,6 +1,6 @@
-#require 'active_support/inflector'
+require 'active_support/inflector'
 
-# Loop through each file with extension .go and create a 
+# Loop through each file with extension .go and create a
 # test file in the format "<filename>_test.go". Then
 # Generate code based on file name.
 Dir.glob("./*.go") do |file|
@@ -8,6 +8,7 @@ Dir.glob("./*.go") do |file|
   File.open(base + "_test.go", "w") { |f|
     # model name config
     upcase_name = base.slice(0,1).capitalize + base.slice(1..-1)
+    plural_name = base.pluralize
 
     # Test Suite to generate
     f.write('package main_test')
@@ -29,12 +30,12 @@ Dir.glob("./*.go") do |file|
     f.puts @string
     f.puts @string
 
-    f.write('var _ = Describe("'+base+'", func() {')
+    f.write('var _ = Describe("'+upcase_name+'", func() {')
     f.write('	var client = http.Client{}')
     f.puts @string
     f.puts @string
 
-    f.write('	Describe("POST /api/'+base+'s", func() {')
+    f.write('	Describe("POST /api/'+plural_name+'", func() {')
     f.puts @string
     f.write('		Context("with wrong '+base+' attributes", func() {')
     f.puts @string
@@ -42,12 +43,12 @@ Dir.glob("./*.go") do |file|
     f.puts @string
     f.write('				reader := bytes.NewReader([]byte(`{')
     f.puts @string
-    f.write('					"nae": "foo"')
+    f.write('					TODO: JSON Object to POST with')
     f.puts @string
     f.write('				}`))')
     f.puts @string
     f.puts @string
-    f.write('				req, err := http.NewRequest("POST", mockServer.URL+"/api/'+base+'s", reader)')
+    f.write('				req, err := http.NewRequest("POST", _SERVER_+"/api/'+plural_name+'", reader)')
     f.puts @string
     f.write('				Expect(err).To(BeNil())')
     f.puts @string
@@ -70,12 +71,12 @@ Dir.glob("./*.go") do |file|
     f.puts @string
     f.write('				reader := bytes.NewReader([]byte(`{')
     f.puts @string
-    f.write('					// JSON Object to POST with')
+    f.write('					TODO: JSON Object to POST with')
     f.puts @string
     f.write('				}`))')
     f.puts @string
     f.puts @string
-    f.write('				req, err := http.NewRequest("POST", mockServer.URL+"/api/'+base+'s", reader)')
+    f.write('				req, err := http.NewRequest("POST", _SERVER_+"/api/'+plural_name+'", reader)')
     f.puts @string
     f.write('				Expect(err).To(BeNil())')
     f.puts @string
@@ -96,14 +97,14 @@ Dir.glob("./*.go") do |file|
     f.puts @string
     f.puts @string
 
-    f.write('	Describe("GET /api/'+base+'s/:id", func() {')
+    f.write('	Describe("GET /api/'+plural_name+'/:id", func() {')
     f.puts @string
     f.write('		Context("with non-existing '+base+'", func() {')
     f.puts @string
     f.write('			It("responds with a 404", func() {')
     f.puts @string
     f.puts @string
-    f.write('				req, err := http.NewRequest("GET", mockServer.URL+"/api/'+base+'s/0", nil)')
+    f.write('				req, err := http.NewRequest("GET", _SERVER_+"/api/'+plural_name+'/0", nil)')
     f.puts @string
     f.write('				Expect(err).To(BeNil())')
     f.puts @string
@@ -125,7 +126,7 @@ Dir.glob("./*.go") do |file|
     f.write('			It("responds with a 200", func() {')
     f.puts @string
     f.puts @string
-    f.write('				req, err := http.NewRequest("GET", mockServer.URL+"/api/'+base+'s/1", nil)')
+    f.write('				req, err := http.NewRequest("GET", _SERVER_+"/api/'+plural_name+'/1", nil)')
     f.puts @string
     f.write('				Expect(err).To(BeNil())')
     f.puts @string
@@ -146,7 +147,7 @@ Dir.glob("./*.go") do |file|
     f.puts @string
     f.puts @string
 
-    f.write('	Describe("PUT /api/'+base+'s/:id", func() {')
+    f.write('	Describe("PUT /api/'+plural_name+'/:id", func() {')
     f.puts @string
     f.write('		Context("with  incorrect '+base+' attributes", func() {')
     f.puts @string
@@ -154,12 +155,12 @@ Dir.glob("./*.go") do |file|
     f.puts @string
     f.write('				reader := bytes.NewReader([]byte(`{')
     f.puts @string
-    f.write('					// JSON Object to POST with')
+    f.write('					TODO: JSON Object to POST with')
     f.puts @string
     f.write('				}`))')
     f.puts @string
     f.puts @string
-    f.write('				req, err := http.NewRequest("PUT", mockServer.URL+"/api/'+base+'s/1", reader)')
+    f.write('				req, err := http.NewRequest("PUT", _SERVER_+"/api/'+plural_name+'/1", reader)')
     f.puts @string
     f.write('				Expect(err).To(BeNil())')
     f.puts @string
@@ -184,12 +185,12 @@ Dir.glob("./*.go") do |file|
     f.puts @string
     f.write('				reader := bytes.NewReader([]byte(`{')
     f.puts @string
-    f.write('					// JSON Object to POST with')
+    f.write('					TODO: JSON Object to POST with')
     f.puts @string
     f.write('				}`))')
     f.puts @string
     f.puts @string
-    f.write('				req, err := http.NewRequest("PUT", mockServer.URL+"/api/'+base+'s/1", reader)')
+    f.write('				req, err := http.NewRequest("PUT", _SERVER_+"/api/'+plural_name+'/1", reader)')
     f.puts @string
     f.write('				Expect(err).To(BeNil())')
     f.puts @string
@@ -211,14 +212,14 @@ Dir.glob("./*.go") do |file|
     f.puts @string
     f.puts @string
 
-    f.write('	Describe("DELETE /api/'+base+'s/:id", func() {')
+    f.write('	Describe("DELETE /api/'+plural_name+'/:id", func() {')
     f.puts @string
     f.write('		Context("with non-existing '+base+'", func() {')
     f.puts @string
     f.write('			It("responds with a 404", func() {')
     f.puts @string
     f.puts @string
-    f.write('				req, err := http.NewRequest("DELETE", mockServer.URL+"/api/'+base+'s/10200", nil)')
+    f.write('				req, err := http.NewRequest("DELETE", _SERVER_+"/api/'+plural_name+'/10200", nil)')
     f.puts @string
     f.write('				Expect(err).To(BeNil())')
     f.puts @string
@@ -240,7 +241,7 @@ Dir.glob("./*.go") do |file|
     f.write('			It("responds with a 204", func() {')
     f.puts @string
     f.puts @string
-    f.write('				req, err := http.NewRequest("DELETE", mockServer.URL+"/api/'+base+'s/1", nil)')
+    f.write('				req, err := http.NewRequest("DELETE", _SERVER_+"/api/'+plural_name+'/1", nil)')
     f.puts @string
     f.write('				Expect(err).To(BeNil())')
     f.puts @string
